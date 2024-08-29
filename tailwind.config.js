@@ -1,21 +1,25 @@
-/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
-// tailwind.config.js
 module.exports = {
   darkMode: ["class"],
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx,svg}',
   ],
+  prefix: "",
   theme: {
-    screens: {
-      'sm': '640px',
-      'md': '768px',
-      'lg': '1025px',
-      'xl': '1280px',
-      '2xl': '1536px',
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1025px',
+        'xl': '1280px',
+      },
     },
     extend: {
       colors: {
@@ -64,12 +68,12 @@ module.exports = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: 0 },
+          from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 },
+          to: { height: "0" },
         },
       },
       animation: {
@@ -78,5 +82,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
