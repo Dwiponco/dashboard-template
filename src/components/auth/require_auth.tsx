@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../../context/auth_context'
-import Sidebar from '../layout/sidebar'
+import { Sidebar } from '../layout/sidebar'
 import Header from '../layout/header'
 
 const RequireAuth: React.FC = () => {
     const { isAuthenticated, loading } = useAuth()
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
 
     useEffect(() => {
         const handleResize = () => {
@@ -43,15 +44,23 @@ const RequireAuth: React.FC = () => {
             <Sidebar
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
+                isCollapsed={isSidebarCollapsed}
+                setIsCollapsed={setIsSidebarCollapsed}
             />
 
             {/* Main Content Area */}
-            <div className='flex flex-col w-full bg-gmiSecondary px-7'>
+            <div className='flex flex-col w-full bg-gmiSecondary lg:px-7'>
                 {/* Header */}
-                <Header onToggleSidebar={handleToggleSidebar} />
+                <Header
+                    onToggleSidebar={handleToggleSidebar}
+                    setIsCollapsed={() =>
+                        setIsSidebarCollapsed(!isSidebarCollapsed)
+                    }
+                    isCollapsed={isSidebarCollapsed}
+                />
 
                 {/* Content */}
-                <main className='flex-1 overflow-y-auto'>
+                <main className='flex-1 overflow-y-auto px-7 lg:px-0 pt-6'>
                     <Outlet />
                 </main>
             </div>

@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useState } from 'react'
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded'
 import { Link, useLocation } from 'react-router-dom'
 import * as Icons from '@mui/icons-material/'
-import logo from '../../assets/logo-dumy.png'
+import logo from '@/assets/logo-dumy.png'
 
 interface MenuItem {
     id: string
@@ -21,6 +21,7 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
     const [loading, setLoading] = useState(true)
     const [openMenu, setOpenMenu] = useState<string | null>(null)
     const [openSubMenu, setOpenSubMenu] = useState<string | null>(null)
+    const [isCollapsed, setIsCollapsed] = useState(false)
 
     useEffect(() => {
         const fetchMenuData = async () => {
@@ -164,7 +165,7 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                     <IconComponent
                         fontSize='small'
                         sx={{
-                            color: `${isActive ? '#8470ff' : ''}`,
+                            color: `${isActive ? '#8470ff' : '#9ca3af'}`,
                         }}
                     />
                 </Suspense>
@@ -173,7 +174,6 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             return <span>Error loading icon</span>
         }
     }
-
     return (
         <div className='bg-gmiSecondary'>
             {isOpen && (
@@ -186,15 +186,33 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
             <div
                 className={`fixed inset-y-0 left-0 transform rounded-tr-[15px] rounded-br-[15px] ${
                     isOpen ? 'translate-x-0' : '-translate-x-full'
-                } transition-transform duration-300 ease-in-out z-50 w-64 h-full p-4 lg:relative lg:translate-x-0 bg-white shadow-xl text-textPrimary text-sm`}
+                } ${
+                    isCollapsed ? 'w-[78px]' : 'w-64'
+                } transition-all duration-300 ease-in-out z-50 h-full p-4 lg:relative lg:translate-x-0 bg-white shadow-xl text-textPrimary text-sm overflow-y-auto`}
             >
-                <div className='flex justify-between items-center mb-6'>
-                    <img src={logo} alt='logo' className='h-[50px]' />
-                    <button>
-                        <Icons.Menu />
+                <div
+                    className={`flex items-center mb-6 ${
+                        isCollapsed ? 'justify-center' : 'justify-between'
+                    }`}
+                >
+                    {!isCollapsed && (
+                        <img src={logo} alt='logo' className='h-[50px]' />
+                    )}
+                    <button onClick={() => setIsCollapsed(!isCollapsed)}>
+                        <Icons.Menu
+                            sx={{
+                                color: '#9ca3af',
+                            }}
+                        />
                     </button>
                 </div>
-                <ul className='space-y-2'>
+
+                <ul
+                    className='space-y-2'
+                    onClick={() => {
+                        if (isCollapsed) setIsCollapsed(!isCollapsed)
+                    }}
+                >
                     {menuData.map((menu) => (
                         <li
                             key={menu.id}
@@ -203,22 +221,26 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                             } rounded-[10px] mt-0`}
                         >
                             {menu.children ? (
-                                <>
-                                    <div
-                                        className='cursor-pointer transition-transform py-2 px-3 flex gap-4 justify-between items-center'
-                                        onClick={() => handleMenuClick(menu.id)}
-                                    >
-                                        <div className='flex gap-3 items-center'>
-                                            {menu.icon ? (
-                                                handleIcon(
-                                                    menu.icon,
-                                                    isMenuActive(menu)
-                                                )
-                                            ) : (
-                                                <span>Icon not found</span>
-                                            )}
-                                            <p>{menu.title}</p>
-                                        </div>
+                                <div
+                                    className='cursor-pointer transition-transform py-2 px-3 flex gap-4 justify-between items-center'
+                                    onClick={() => handleMenuClick(menu.id)}
+                                >
+                                    <div className='flex gap-3 items-center'>
+                                        {menu.icon ? (
+                                            handleIcon(
+                                                menu.icon,
+                                                isMenuActive(menu)
+                                            )
+                                        ) : (
+                                            <span>Icon not found</span>
+                                        )}
+                                        {!isCollapsed && (
+                                            <p className='font-medium'>
+                                                {menu.title}
+                                            </p>
+                                        )}
+                                    </div>
+                                    {!isCollapsed && menu.children && (
                                         <KeyboardArrowRightRoundedIcon
                                             fontSize='small'
                                             className={`${
@@ -227,128 +249,125 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                                                     : 'text-textSecondary'
                                             }`}
                                         />
-                                    </div>
-                                    {openMenu === menu.id && (
-                                        <ul className='pl-4'>
-                                            {menu.children.map((submenu) => (
-                                                <li
-                                                    key={submenu.id}
-                                                    className={`py-[4px] ${
-                                                        isActive(submenu.path)
-                                                            ? 'text-textPrimary'
-                                                            : 'text-textSecondary'
-                                                    } rounded-2xl`}
-                                                >
-                                                    {submenu.children ? (
-                                                        <>
-                                                            <div
-                                                                className='ml-4 flex gap-4 items-center cursor-pointer justify-between px-3'
-                                                                onClick={() =>
-                                                                    handleSubMenuClick(
-                                                                        submenu.id
-                                                                    )
-                                                                }
-                                                            >
-                                                                <p>
-                                                                    {
-                                                                        submenu.title
-                                                                    }
-                                                                </p>
-                                                                <KeyboardArrowRightRoundedIcon
-                                                                    fontSize='small'
-                                                                    className={`${
-                                                                        openSubMenu ===
-                                                                        submenu.id
-                                                                            ? 'transform rotate-90 text-textSecondary'
-                                                                            : 'text-textSecondary'
-                                                                    }`}
-                                                                />
-                                                            </div>
-                                                            {openSubMenu ===
-                                                                submenu.id && (
-                                                                <ul className='pl-4 mt-1 ml-4'>
-                                                                    {submenu.children.map(
-                                                                        (
-                                                                            subSubMenu
-                                                                        ) => (
-                                                                            <li
-                                                                                key={
-                                                                                    subSubMenu.id
-                                                                                }
-                                                                                className={`py-[4px] ${
-                                                                                    isActive(
-                                                                                        subSubMenu.path
-                                                                                    )
-                                                                                        ? 'text-gmiPrimary'
-                                                                                        : ''
-                                                                                } rounded-2xl`}
-                                                                            >
-                                                                                <Link
-                                                                                    to={
-                                                                                        subSubMenu.path
-                                                                                    }
-                                                                                    onClick={
-                                                                                        handleOverlayClick
-                                                                                    }
-                                                                                >
-                                                                                    <div className='ml-4'>
-                                                                                        {
-                                                                                            subSubMenu.title
-                                                                                        }
-                                                                                    </div>
-                                                                                </Link>
-                                                                            </li>
-                                                                        )
-                                                                    )}
-                                                                </ul>
-                                                            )}
-                                                        </>
-                                                    ) : (
-                                                        <Link
-                                                            to={submenu.path}
-                                                            onClick={
-                                                                handleOverlayClick
-                                                            }
-                                                            className={`ml-7 ${
-                                                                isActive(
-                                                                    submenu.path
-                                                                )
-                                                                    ? 'text-gmiPrimary'
-                                                                    : ''
-                                                            }`}
-                                                        >
-                                                            {submenu.title}
-                                                        </Link>
-                                                    )}
-                                                </li>
-                                            ))}
-                                            {isActive(menu.path) && (
-                                                <div className='h-[10px]' />
-                                            )}
-                                        </ul>
                                     )}
-                                </>
+                                </div>
                             ) : (
                                 <Link
+                                    className='cursor-pointer transition-transform py-2 px-3 items-center flex gap-3 '
                                     to={menu.path}
-                                    onClick={handleOverlayClick}
-                                    className={`flex gap-3 items-center transition-transform py-2 px-3 ${
-                                        isActive(menu.path)
-                                            ? 'text-gmiPrimary'
-                                            : ''
-                                    }`}
                                 >
                                     {menu.icon ? (
                                         handleIcon(
                                             menu.icon,
-                                            isActive(menu.path)
+                                            isMenuActive(menu)
                                         )
                                     ) : (
                                         <span>Icon not found</span>
                                     )}
-                                    <p>{menu.title}</p>
+                                    {!isCollapsed && (
+                                        <p className='font-medium'>
+                                            {menu.title}
+                                        </p>
+                                    )}
                                 </Link>
                             )}
+                            {!isCollapsed &&
+                                openMenu === menu.id &&
+                                menu.children && (
+                                    <ul className='pl-4'>
+                                        {menu.children.map((submenu) => (
+                                            <li
+                                                key={submenu.id}
+                                                className={`py-[4px] ${
+                                                    isActive(submenu.path)
+                                                        ? 'text-textPrimary'
+                                                        : 'text-textSecondary'
+                                                } rounded-2xl`}
+                                            >
+                                                {submenu.children ? (
+                                                    <>
+                                                        <div
+                                                            className='ml-4 flex gap-4 items-center cursor-pointer justify-between px-3'
+                                                            onClick={() =>
+                                                                handleSubMenuClick(
+                                                                    submenu.id
+                                                                )
+                                                            }
+                                                        >
+                                                            <p className='font-medium'>
+                                                                {submenu.title}
+                                                            </p>
+                                                            <KeyboardArrowRightRoundedIcon
+                                                                fontSize='small'
+                                                                className={`${
+                                                                    openSubMenu ===
+                                                                    submenu.id
+                                                                        ? 'transform rotate-90 text-textSecondary'
+                                                                        : 'text-textSecondary'
+                                                                }`}
+                                                            />
+                                                        </div>
+                                                        {openSubMenu ===
+                                                            submenu.id && (
+                                                            <ul className='pl-4 mt-1 ml-4'>
+                                                                {submenu.children.map(
+                                                                    (
+                                                                        subSubMenu
+                                                                    ) => (
+                                                                        <li
+                                                                            key={
+                                                                                subSubMenu.id
+                                                                            }
+                                                                            className={`py-[4px] ${
+                                                                                isActive(
+                                                                                    subSubMenu.path
+                                                                                )
+                                                                                    ? 'text-gmiPrimary'
+                                                                                    : ''
+                                                                            } rounded-2xl`}
+                                                                        >
+                                                                            <Link
+                                                                                to={
+                                                                                    subSubMenu.path
+                                                                                }
+                                                                                onClick={
+                                                                                    handleOverlayClick
+                                                                                }
+                                                                            >
+                                                                                <div className='ml-4'>
+                                                                                    <p className='font-medium'>
+                                                                                        {
+                                                                                            subSubMenu.title
+                                                                                        }
+                                                                                    </p>
+                                                                                </div>
+                                                                            </Link>
+                                                                        </li>
+                                                                    )
+                                                                )}
+                                                            </ul>
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <Link
+                                                        to={submenu.path}
+                                                        className={`ml-4 cursor-pointer transition-transform px-3 items-center flex gap-3 ${
+                                                            isActive(
+                                                                submenu.path
+                                                            )
+                                                                ? 'text-gmiPrimary'
+                                                                : ''
+                                                        }`}
+                                                    >
+                                                        <p className='font-medium'>
+                                                            {submenu.title}
+                                                        </p>
+                                                    </Link>
+                                                )}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                         </li>
                     ))}
                 </ul>

@@ -12,16 +12,26 @@ interface MenuItem {
     children?: MenuItem[]
 }
 
-const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
+// Define the type for the Sidebar props
+export interface SidebarProps {
+    isOpen: boolean
+    onClose: () => void
+    isCollapsed: boolean
+    setIsCollapsed: (value: boolean) => void
+}
+
+// Define the Sidebar component with the specified props
+export const Sidebar: React.FC<SidebarProps> = ({
     isOpen,
     onClose,
+    isCollapsed,
+    setIsCollapsed,
 }) => {
     const location = useLocation()
     const [menuData, setMenuData] = useState<MenuItem[]>([])
     const [loading, setLoading] = useState(true)
     const [openMenu, setOpenMenu] = useState<string | null>(null)
     const [openSubMenu, setOpenSubMenu] = useState<string | null>(null)
-    const [isCollapsed, setIsCollapsed] = useState(false)
 
     useEffect(() => {
         const fetchMenuData = async () => {
@@ -165,7 +175,7 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                     <IconComponent
                         fontSize='small'
                         sx={{
-                            color: `${isActive ? '#8470ff' : ''}`,
+                            color: `${isActive ? '#8470ff' : '#9ca3af'}`,
                         }}
                     />
                 </Suspense>
@@ -195,12 +205,17 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                         isCollapsed ? 'justify-center' : 'justify-between'
                     }`}
                 >
-                    {!isCollapsed && (
-                        <img src={logo} alt='logo' className='h-[50px]' />
+                    {!isCollapsed ? (
+                        <img src={logo} alt='logo' className='h-[39px]' />
+                    ) : (
+                        <button onClick={() => setIsCollapsed(!isCollapsed)}>
+                            <Icons.Menu
+                                sx={{
+                                    color: '#9ca3af',
+                                }}
+                            />
+                        </button>
                     )}
-                    <button onClick={() => setIsCollapsed(!isCollapsed)}>
-                        <Icons.Menu />
-                    </button>
                 </div>
 
                 <ul
@@ -218,7 +233,7 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                         >
                             {menu.children ? (
                                 <div
-                                    className='cursor-pointer transition-transform py-2 px-3 flex gap-4 justify-between items-center'
+                                    className='cursor-pointer py-2 px-3 flex gap-4 justify-between items-center'
                                     onClick={() => handleMenuClick(menu.id)}
                                 >
                                     <div className='flex gap-3 items-center'>
@@ -230,7 +245,11 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                                         ) : (
                                             <span>Icon not found</span>
                                         )}
-                                        {!isCollapsed && <p>{menu.title}</p>}
+                                        {!isCollapsed && (
+                                            <p className='font-medium'>
+                                                {menu.title}
+                                            </p>
+                                        )}
                                     </div>
                                     {!isCollapsed && menu.children && (
                                         <KeyboardArrowRightRoundedIcon
@@ -247,6 +266,7 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                                 <Link
                                     className='cursor-pointer transition-transform py-2 px-3 items-center flex gap-3 '
                                     to={menu.path}
+                                    onClick={() => handleOverlayClick()}
                                 >
                                     {menu.icon ? (
                                         handleIcon(
@@ -256,7 +276,11 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                                     ) : (
                                         <span>Icon not found</span>
                                     )}
-                                    {!isCollapsed && <p>{menu.title}</p>}
+                                    {!isCollapsed && (
+                                        <p className='font-medium'>
+                                            {menu.title}
+                                        </p>
+                                    )}
                                 </Link>
                             )}
                             {!isCollapsed &&
@@ -282,7 +306,7 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                                                                 )
                                                             }
                                                         >
-                                                            <p>
+                                                            <p className='font-medium'>
                                                                 {submenu.title}
                                                             </p>
                                                             <KeyboardArrowRightRoundedIcon
@@ -323,9 +347,11 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                                                                                 }
                                                                             >
                                                                                 <div className='ml-4'>
-                                                                                    {
-                                                                                        subSubMenu.title
-                                                                                    }
+                                                                                    <p className='font-medium'>
+                                                                                        {
+                                                                                            subSubMenu.title
+                                                                                        }
+                                                                                    </p>
                                                                                 </div>
                                                                             </Link>
                                                                         </li>
@@ -344,8 +370,13 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                                                                 ? 'text-gmiPrimary'
                                                                 : ''
                                                         }`}
+                                                        onClick={() =>
+                                                            handleOverlayClick()
+                                                        }
                                                     >
-                                                        {submenu.title}
+                                                        <p className='font-medium'>
+                                                            {submenu.title}
+                                                        </p>
                                                     </Link>
                                                 )}
                                             </li>
@@ -359,5 +390,3 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
         </div>
     )
 }
-
-export default Sidebar
