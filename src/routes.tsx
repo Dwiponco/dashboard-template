@@ -3,9 +3,11 @@
 import { createBrowserRouter, RouteObject } from 'react-router-dom'
 import Login from './app/login'
 import RequireAuth from './components/auth/require_auth'
-import { About } from './app/about'
 import { Dashboard } from './app/dashboard'
-import { Sales } from './app/sales'
+import { EcomerceCustomer } from './app/e-commerce/order'
+import { EcomerceOrder } from './app/e-commerce/customer'
+import { SettingsProfile } from './app/settings/profile'
+import { FinanceTransaction } from './app/finance/transaction'
 
 export const routes: RouteObject[] = [
     {
@@ -22,12 +24,52 @@ export const routes: RouteObject[] = [
                 element: <Dashboard />,
             },
             {
-                path: 'about',
-                element: <About />,
+                path: '/ecommerce',
+                errorElement: <p>Tidak ada disini</p>,
+                children: [
+                    {
+                        path: '/ecommerce/customers',
+                        element: <EcomerceCustomer />,
+                    },
+                    {
+                        path: '/ecommerce/orders',
+                        element: <EcomerceOrder />,
+                    },
+                ],
             },
             {
-                path: 'sales',
-                element: <Sales />,
+                path: '/ecommerce',
+                errorElement: <p>Tidak ada disini</p>,
+                children: [
+                    {
+                        path: '/ecommerce/customers',
+                        element: <EcomerceCustomer />,
+                    },
+                    {
+                        path: '/ecommerce/orders',
+                        element: <EcomerceOrder />,
+                    },
+                ],
+            },
+            {
+                path: '/finance',
+                errorElement: <p>Tidak ada disini</p>,
+                children: [
+                    {
+                        path: '/finance/transaction',
+                        element: <FinanceTransaction />,
+                    },
+                ],
+            },
+            {
+                path: '/settings',
+                errorElement: <p>Tidak ada disini</p>,
+                children: [
+                    {
+                        path: '/settings/profile',
+                        element: <SettingsProfile />,
+                    },
+                ],
             },
         ],
     },

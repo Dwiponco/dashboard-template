@@ -43,74 +43,69 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     {
                         id: 'menu1',
                         title: 'Dashboard',
-                        path: '/menu1',
+                        path: '/dashboard',
                         icon: 'GridViewRounded',
-                        children: [
-                            {
-                                id: 'submenu1',
-                                title: 'Submenu 1-1',
-                                path: '#',
-                                children: [
-                                    {
-                                        id: 'submenu1-1',
-                                        title: 'Submenu 1-1-1',
-                                        path: '/about',
-                                    },
-                                    {
-                                        id: 'submenu1-2',
-                                        title: 'Submenu 1-1-2',
-                                        path: '/menu1/submenu1/submenu1-2',
-                                    },
-                                ],
-                            },
-                            {
-                                id: 'submenu2',
-                                title: 'Submenu 1-2',
-                                path: '/sales',
-                            },
-                        ],
+                        // children: [],
+                        //     {
+                        //         id: 'submenu1',
+                        //         title: 'Submenu 1-1',
+                        //         path: '#',
+                        //         children: [
+                        //             {
+                        //                 id: 'submenu1-1',
+                        //                 title: 'Submenu 1-1-1',
+                        //                 path: '/about',
+                        //             },
+                        //             {
+                        //                 id: 'submenu1-2',
+                        //                 title: 'Submenu 1-1-2',
+                        //                 path: '/menu1/submenu1/submenu1-2',
+                        //             },
+                        //         ],
+                        //     },
+                        //     {
+                        //         id: 'submenu2',
+                        //         title: 'Submenu 1-2',
+                        //         path: '/sales',
+                        //     },
+                        // ],
                     },
                     {
                         id: 'menu2',
-                        title: 'Sales',
-                        path: '/menu2',
-                        icon: 'ReceiptRounded',
+                        title: 'E-Commerce',
+                        path: '/ecommerce',
+                        icon: 'LocalMall',
                         children: [
                             {
                                 id: 'submenu3',
-                                title: 'Submenu 2-1',
-                                path: '/menu2/submenu3',
+                                title: 'Customers',
+                                path: '/ecommerce/customers',
                             },
                             {
                                 id: 'submenu4',
-                                title: 'Submenu 2-2',
-                                path: '/menu2/submenu4',
-                                children: [
-                                    {
-                                        id: 'submenu4-1',
-                                        title: 'Submenu 2-2-1',
-                                        path: '/about',
-                                    },
-                                    {
-                                        id: 'submenu4-2',
-                                        title: 'Submenu 2-2-2',
-                                        path: '/menu2/submenu4/submenu4-2',
-                                    },
-                                ],
+                                title: 'Orders',
+                                path: '/ecommerce/orders',
                             },
                         ],
                     },
                     {
                         id: 'menu3',
                         title: 'Finance',
-                        path: '/dashboard',
+                        path: '/finance/transaction',
                         icon: 'PaidRounded',
                     },
                     {
                         id: 'menu4',
                         title: 'Settings',
-                        path: '/dashboard',
+                        path: '/settings',
                         icon: 'TuneRounded',
+                        children: [
+                            {
+                                id: 'submenu3',
+                                title: 'Profile',
+                                path: '/settings/profile',
+                            },
+                        ],
                     },
                     // menu lainya
                 ]
@@ -202,7 +197,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
                 <div
                     className={`flex items-center mb-6 ${
-                        isCollapsed ? 'justify-center' : 'justify-between'
+                        isCollapsed ? 'justify-center' : 'justify-center'
                     }`}
                 >
                     {!isCollapsed ? (
@@ -219,7 +214,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
 
                 <ul
-                    className='space-y-2'
+                    className='space-y-2 mt-10'
                     onClick={() => {
                         if (isCollapsed) setIsCollapsed(!isCollapsed)
                     }}
